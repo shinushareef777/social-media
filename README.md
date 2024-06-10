@@ -4,8 +4,8 @@ Follow these steps to set up the Dockerized Django application:
 
 1. **Clone the Repository:**
    ```bash
-      git clone <repository_url>
-      cd <repository_name>
+      git clone git@github.com:shinushareef777/social-media.git
+      cd social-media
    ```
 
 2.**Build and Run Docker:**
