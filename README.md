@@ -34,7 +34,7 @@ To get started with this project, follow these steps:
     ```
 
 5. Access the application:
-   ```go to <http://127.0.0.1:8000/> or <http://0.0.0.1:8000/> and hit below mentioned endpoints```
+    go to <http://127.0.0.1:8000/> or <http://0.0.0.1:8000/> and hit below mentioned endpoints.
 
 6. Usage:
-   ```Once the Docker containers are up and running, you can access the following postman collection to test all the API endpoints <https://documenter.getpostman.com/view/25173500/2sA3XLFjEy>```
+      Once the Docker containers are up and running, you can access the following postman collection to test all the API endpoints <https://documenter.getpostman.com/view/25173500/2sA3XLFjEy>
