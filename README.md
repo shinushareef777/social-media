@@ -10,17 +10,15 @@ Follow these steps to set up the Dockerized Django application:
    cd social-media
    ```
 
-2.**Build and Run Docker:**
+2. **Build and Run Docker:**
 
   ```bash
   docker-compose up --build
- ```
-
-3.**Run the Docker container:**
+  
+3. **Run the Docker container:**
 
    ```bash
       docker-compose up
-    ```
 
 4. **Access the application:**
    go to <http://127.0.0.1:8000/> or <http://0.0.0.1:8000/> and hit below mentioned endpoints
