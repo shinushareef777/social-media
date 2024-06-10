@@ -1,29 +1,40 @@
-### Installation Steps
 
-Follow these steps to set up the Dockerized Django application:
+# Getting Started
 
-1. **Clone the Repository:**
+To get started with this project, follow these steps:
 
-   ```bash
-   git clone git@github.com:shinushareef777/social-media.git
-   
-   cd social-media
-   ```
+## Prerequisites
 
-2. **Build and Run Docker:**
+- Docker: Ensure you have Docker installed on your system. You can download and install Docker from [here](https://www.docker.com/get-started).
 
-  ```bash
-  docker-compose up --build
-  ```
+### Installation
 
-3. **Run the Docker container:**
+1. Clone the repository to your local machine:
 
-   ```bash
-   docker-compose up
-   ```
+    ```bash
+    git clone git@github.com:shinushareef777/social-media.git
+    ```
 
-4. **Access the application:**
-   go to <http://127.0.0.1:8000/> or <http://0.0.0.1:8000/> and hit below mentioned endpoints
+2. Navigate to the project directory:
 
-5. **Usage:**
-   Once the Docker containers are up and running, you can access the following postman collection to test all the API endpoints <https://documenter.getpostman.com/view/25173500/2sA3XLFjEy>
+    ```bash
+    cd social-media
+    ```
+
+3. Build the Docker image:
+
+    ```bash
+    docker-compose up --build
+    ```
+
+4. Run the Docker containers:
+
+    ```bash
+    docker-compose up
+    ```
+
+5. Access the application:
+   ```go to <http://127.0.0.1:8000/> or <http://0.0.0.1:8000/> and hit below mentioned endpoints```
+
+6. Usage:
+   ```Once the Docker containers are up and running, you can access the following postman collection to test all the API endpoints <https://documenter.getpostman.com/view/25173500/2sA3XLFjEy>```
