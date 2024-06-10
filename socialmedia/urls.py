@@ -21,3 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('friends.urls')),
 ]
+
+
+handler404 = "utils.views.error_404"

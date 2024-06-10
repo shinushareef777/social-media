@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-_jvim7jjw2yzbpv^)0e6(_vk@=c%$2umaya7!y3x4ubr*h991z'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["0.0.0.0", "*", "127.0.0.1"]
 
@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'friends',
-    'rest_framework'
+    'rest_framework',
+    'drf_standardized_errors'
 ]
 
 MIDDLEWARE = [
@@ -112,6 +113,26 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 10,
+}
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "DEBUG",  # Change to WARNING for less verbose output
+        },
+        "rest_framework": {
+            "handlers": ["console"],
+            "level": "DEBUG",  # Change to WARNING for less verbose output
+        },
+    },
 }
 
 SIMPLE_JWT = {

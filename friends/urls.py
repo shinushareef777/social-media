@@ -10,12 +10,15 @@ from .views import (
     RejectFriendRequestView,
     ListPendingFriendRequestsView,
     ListFriendsView,
-    UserSearchView
+    UserSearchView,
+    HomeView
 )
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="home"),
     path("register/", RegisterView.as_view(), name="register"),
     path("login/", LoginView.as_view(), name="login"),
+    path("search/", UserSearchView.as_view(), name="user-search"),
     path("users/", UserListView.as_view(), name="user-list"),
     path("users/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
     path("friends/send/", SendFriendRequestView.as_view(), name="send_friend_request"),
@@ -35,5 +38,4 @@ urlpatterns = [
         ListPendingFriendRequestsView.as_view(),
         name="list_pending_friend_requests",
     ),
-    path("search/", UserSearchView.as_view(), name="user-search"),
 ]

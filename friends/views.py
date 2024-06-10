@@ -2,10 +2,12 @@
 from rest_framework import generics, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import exception_handler
 from django.contrib.auth import get_user_model, authenticate
 from django.db import models
-from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import PageNumberPagination
 from .models import Friends, CustomUser, FriendRequest
 from .serializers import (
     RegisterSerializer,
@@ -20,6 +22,11 @@ from datetime import timedelta
 
 
 User = get_user_model()
+
+
+class HomeView(APIView):
+    def get(self, request, *args, **kwargs):
+        return Response({"message":"Welcome to social media app."})
 
 
 class RegisterView(generics.CreateAPIView):
@@ -43,15 +50,16 @@ class LoginView(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
-
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
 
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
 
 
 class UserSearchView(generics.ListAPIView):
@@ -169,3 +177,24 @@ class ListPendingFriendRequestsView(generics.ListAPIView):
         return FriendRequest.objects.filter(
             receiver=self.request.user, status="pending"
         )
+
+
+def custom_exception_handler(exc, context):
+    response = exception_handler(exc, context)
+
+    if response is None:
+        # If the exception was not handled by DRF, return the original response
+        return response
+
+    custom_response_data = {
+        "error": "An error occurred",
+        "detail": str(exc),  # Include the error message
+        "status_code": response.status_code,
+    }
+
+    # Customize the response data based on the status code
+    if response.status_code == status.HTTP_404_NOT_FOUND:
+        custom_response_data["detail"] = "Resource not found"
+
+    # Return the custom response
+    return Response(custom_response_data, status=response.status_code)
