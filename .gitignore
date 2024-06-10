@@ -1,0 +1,5 @@
+soc-env
+friends/__pycache__
+socialmedia/__pycache__
+db.sqlite3
+friends/migrations/__pycache__
