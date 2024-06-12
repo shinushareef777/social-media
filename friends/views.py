@@ -26,7 +26,7 @@ User = get_user_model()
 
 class HomeView(APIView):
     def get(self, request, *args, **kwargs):
-        return Response({"message":"Welcome to social media app."})
+        return Response({"message": "Welcome to social media app."})
 
 
 class RegisterView(generics.CreateAPIView):
@@ -50,6 +50,7 @@ class LoginView(generics.GenericAPIView):
             status=status.HTTP_200_OK,
         )
 
+
 class UserDetailView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -71,6 +72,9 @@ class UserSearchView(generics.ListAPIView):
         queryset = CustomUser.objects.all()
         name_search = self.request.query_params.get("name", None)
         email_search = self.request.query_params.get("email", None)
+        current_user = self.request.user
+
+        queryset = queryset.exclude(id=current_user.id)
 
         if name_search:
             queryset = queryset.filter(fullname__icontains=name_search)
@@ -107,25 +111,6 @@ class SendFriendRequestView(generics.CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
-class UserSearchView(generics.ListAPIView):
-    serializer_class = UserSearchSearializer
-    permission_classes = [permissions.IsAuthenticated]
-    pagination_class = PageNumberPagination
-
-    def get_queryset(self):
-        queryset = CustomUser.objects.all()
-        name_search = self.request.query_params.get("name", None)
-        email_search = self.request.query_params.get("email", None)
-
-        if name_search:
-            queryset = queryset.filter(fullname__icontains=name_search)
-
-        if email_search:
-            queryset = queryset.filter(email__iexact=email_search)
-
-        return queryset
-
-
 class AcceptFriendRequestView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
@@ -153,7 +138,9 @@ class RejectFriendRequestView(APIView):
                 sender=pk, receiver=request.user, status="pending"
             )
             friend_request.reject()
-            return Response({"detail":"Friend request rejected"}, status=status.HTTP_200_OK)
+            return Response(
+                {"detail": "Friend request rejected"}, status=status.HTTP_200_OK
+            )
         except FriendRequest.DoesNotExist:
             return Response(
                 {"detail": "Friend request not found"}, status=status.HTTP_404_NOT_FOUND
