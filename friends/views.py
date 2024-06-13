@@ -162,7 +162,7 @@ class ListPendingFriendRequestsView(generics.ListAPIView):
 
     def get_queryset(self):
         return FriendRequest.objects.filter(
-            receiver=self.request.user, status="pending"
+            sender=self.request.user, status="pending"
         )
 
 
@@ -170,16 +170,14 @@ def custom_exception_handler(exc, context):
     response = exception_handler(exc, context)
 
     if response is None:
-        # If the exception was not handled by DRF, return the original response
         return response
 
     custom_response_data = {
         "error": "An error occurred",
-        "detail": str(exc),  # Include the error message
+        "detail": str(exc), 
         "status_code": response.status_code,
     }
 
-    # Customize the response data based on the status code
     if response.status_code == status.HTTP_404_NOT_FOUND:
         custom_response_data["detail"] = "Resource not found"
 

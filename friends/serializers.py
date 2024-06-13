@@ -73,7 +73,7 @@ class FriendsSerializer(serializers.ModelSerializer):
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = ["id", "sender", "receiver", "timestamp", "status"]
+        fields = ["id", "receiver", "timestamp", "status"]
         read_only_fields = ['sender']
 
     def create(self, validated_data):
