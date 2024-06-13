@@ -53,8 +53,6 @@ class LoginSerializer(serializers.Serializer):
         except ValidationError:
             raise serializers.ValidationError("Enter a valid email address.")
 
-        print(email, password)
-
         user = authenticate(
             request=self.context.get("request"), email=email, password=password
         )
