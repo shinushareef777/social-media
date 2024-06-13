@@ -67,14 +67,14 @@ class LoginSerializer(serializers.Serializer):
 class FriendsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friends
-        fields = ["id", "user", "friend", "created"]
+        fields = ["id", "user", "friend", "created", "fullname", "email"]
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
         fields = ["id", "receiver", "timestamp", "status"]
-        read_only_fields = ['sender']
+        read_only_fields = ['sender', "email", "fullname"]
 
     def create(self, validated_data):
         validated_data['sender'] = self.context['request'].user
