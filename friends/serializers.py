@@ -27,6 +27,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         extra_kwargs = {"password": {"write_only": True}}
 
     def validate_email(self, value):
+        value = value.lower()
         try:
             django_validate_email(value)
         except ValidationError:
@@ -45,7 +46,7 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
-        email = data.get("email")
+        email = data.get("email", "").lower()
         password = data.get("password")
 
         try:
