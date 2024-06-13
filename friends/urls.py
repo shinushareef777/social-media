@@ -4,23 +4,19 @@ from .views import (
     RegisterView,
     LoginView,
     UserListView,
-    UserDetailView,
     SendFriendRequestView,
     AcceptFriendRequestView,
     RejectFriendRequestView,
     ListPendingFriendRequestsView,
     ListFriendsView,
-    UserSearchView,
-    HomeView
+    UserSearchView
 )
 
 urlpatterns = [
-    path("", HomeView.as_view(), name="home"),
-    path("register/", RegisterView.as_view(), name="register"),
-    path("login/", LoginView.as_view(), name="login"),
+    path("auth/register/", RegisterView.as_view(), name="register"),
+    path("auth/login/", LoginView.as_view(), name="login"),
     path("search", UserSearchView.as_view(), name="user-search"),
     path("users/", UserListView.as_view(), name="user-list"),
-    path("users/<int:pk>/", UserDetailView.as_view(), name="user-detail"),
     path("friends/send/", SendFriendRequestView.as_view(), name="send_friend_request"),
     path(
         "friends/accept/<int:pk>/",

@@ -70,6 +70,10 @@ class Friends(models.Model):
     class Meta:
         unique_together = ('user', 'friend')
 
+    @property
+    def friend_details(self):
+        return {"id":self.friend.id, "email":self.friend.email,"name":self.friend.fullname}
+
     def __str__(self):
         return f"{self.user.email} is friends with {self.friend.email}"
 
@@ -91,6 +95,13 @@ class FriendRequest(models.Model):
         ),
         default="pending",
     )
+
+    @property
+    def sender_detail(self):
+        return {
+            "email": self.sender.email,
+            "fullname": self.sender.fullname,
+        }
 
     class Meta:
         unique_together = ("sender", "receiver")

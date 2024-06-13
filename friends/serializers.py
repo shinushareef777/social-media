@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["id", "email",  "password"]
         extra_kwargs = {
             "password": {"write_only": True}
-        }  # Ensures password is write-only
+        } 
 
     def create(self, validated_data):
         user = User.objects.create_user(**validated_data)
@@ -32,7 +32,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         except ValidationError:
             raise serializers.ValidationError("Enter a valid email address.")
         if CustomUser.objects.filter(email=value).exists():
-            raise serializers.ValidationError("This email is already in use.")
+            raise serializers.ValidationError("This email is already in use. Please Login with your email and password")
         return value
     
     def create(self, validated_data):
@@ -65,22 +65,28 @@ class LoginSerializer(serializers.Serializer):
 class FriendsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Friends
-        fields = ["id", "user", "friend", "created", "fullname", "email"]
+        fields = ["id", "friend_details",  "created"]
 
 
 class FriendRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = FriendRequest
-        fields = ["id", "receiver", "timestamp", "status"]
-        read_only_fields = ['sender', "email", "fullname"]
+        fields = ["sender", "sender_detail", "timestamp", "status"]
+        # read_only_fields = ['sender', ]
+
+    def validate(self, data):
+        if data.get("sender", None):
+            raise serializers.ValidationError("You cannot specify the sender in the request. The sender is automatically set as the logged-in user.")
+        return super().validate(data)
 
     def create(self, validated_data):
         validated_data['sender'] = self.context['request'].user
+        if validated_data["sender"] == validated_data["receiver"]:
+            raise serializers.ValidationError("Cannot send friend request to self")
+
         return super().create(validated_data)
 
 class UserSearchSearializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
         fields = ["id", "email", "fullname"]
-
-        

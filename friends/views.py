@@ -24,11 +24,6 @@ from datetime import timedelta
 User = get_user_model()
 
 
-class HomeView(APIView):
-    def get(self, request, *args, **kwargs):
-        return Response({"message": "Welcome to social media app."})
-
-
 class RegisterView(generics.CreateAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
@@ -44,19 +39,12 @@ class LoginView(generics.GenericAPIView):
         refresh = RefreshToken.for_user(user)
         return Response(
             {
-                "user": {"id": user.id, "email": user.email, "name":user.fullname},
+                "user": {"id": user.id, "email": user.email, "name": user.fullname},
                 "refresh": str(refresh),
                 "access": str(refresh.access_token),
             },
             status=status.HTTP_200_OK,
         )
-
-
-class UserDetailView(generics.RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAdminUser]
-
 
 class UserListView(generics.ListAPIView):
     queryset = User.objects.all()
@@ -80,10 +68,32 @@ class UserSearchView(generics.ListAPIView):
         if name_search:
             queryset = queryset.filter(fullname__icontains=name_search)
 
-        if email_search:
+        elif email_search:
             queryset = queryset.filter(email__iexact=email_search)
 
         return queryset
+
+    def list(self, request, *args, **kwargs):
+        name_search = request.query_params.get("name", None)
+        email_search = request.query_params.get("email", None)
+
+        if name_search and email_search:
+            return Response(
+                {
+                    "detail": "You must provide either 'name' or 'email' as a query parameter not both"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not name_search and not email_search:
+            return Response(
+                {
+                    "detail": "You must provide either 'name' or 'email' as a query parameter"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return super().list(request, *args, **kwargs)
 
 
 class SendFriendRequestView(generics.CreateAPIView):
@@ -100,11 +110,16 @@ class SendFriendRequestView(generics.CreateAPIView):
             return Response({"detail": "You cannot send more than 3 friend request"})
 
         request_exists = FriendRequest.objects.filter(
-            sender=request.auth["user_id"], receiver=request.data["receiver"]
+            sender=request.auth["user_id"],
+            receiver=request.data["receiver"],
+            status="pending",
         ).exists()
 
         if request_exists:
-            return Response({"detail": "Friend request already exist"})
+            return Response(
+                {"detail": "Friend request already exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -151,6 +166,7 @@ class RejectFriendRequestView(APIView):
 class ListFriendsView(generics.ListAPIView):
     serializer_class = FriendsSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         user = self.request.user
@@ -160,10 +176,11 @@ class ListFriendsView(generics.ListAPIView):
 class ListPendingFriendRequestsView(generics.ListAPIView):
     serializer_class = FriendRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
+    pagination_class = PageNumberPagination
 
     def get_queryset(self):
         return FriendRequest.objects.filter(
-            sender=self.request.user, status="pending"
+            receiver=self.request.user, status="pending"
         )
 
 
@@ -175,7 +192,7 @@ def custom_exception_handler(exc, context):
 
     custom_response_data = {
         "error": "An error occurred",
-        "detail": str(exc), 
+        "detail": str(exc),
         "status_code": response.status_code,
     }
 
